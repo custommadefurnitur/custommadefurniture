@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "src/lib/mongodb.js", "src/app/api/test/route.js", "src/app/api/auth/[...nextauth]/route.ts", "src/app/Providers.tsx", "src/app/(Website)/layout.tsx"  ],
   "exclude": ["node_modules"]
 }

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hero Card Swipe Navigation</title>
+  <style>
+    :root {
+      --card-width: 320px;
+      --card-height: 420px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Hero Layout Container */
+    .hero-container {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
+      padding: 2rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4rem;
+    }
+
+    .hero-text {
+      flex: 1;
+      max-width: 500px;
+    }
+
+    .hero-text h1 {
+      font-size: 3.5rem;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-text p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Card Deck Visuals */
+    .deck-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 500px;
+    }
+
+    .card-deck {
+      position: relative;
+      width: var(--card-width);
+      height: var(--card-height);
+    }
+
+    .card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 24px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s;
+      cursor: pointer;
+      transform-origin: bottom center;
+    }
+
+    /* Card Gradient Overlay */
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%);
+      border-radius: 24px;
+      z-index: 1;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .card-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Stack Layering Effects */
+    .card:nth-child(1) {
+      transform: scale(1) translateY(0);
+      z-index: 3;
+      opacity: 1;
+    }
+
+    .card:nth-child(2) {
+      transform: scale(0.9) translateY(-20px);
+      z-index: 2;
+      opacity: 0.8;
+    }
+
+    .card:nth-child(3) {
+      transform: scale(0.8) translateY(-40px);
+      z-index: 1;
+      opacity: 0.4;
+    }
+
+    /* Offscreen Swipe Classes */
+    .card.swipe-left {
+      transform: translateX(-200%) rotate(-30deg) !important;
+      opacity: 0;
+    }
+
+    .card.swipe-right {
+      transform: translateX(200%) rotate(30deg) !important;
+      opacity: 0;
+    }
+
+    /* Navigation Buttons */
+    .nav-controls {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .nav-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid #334155;
+      background: transparent;
+      color: white;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: white;
+      color: #0f172a;
+      border-color: white;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero-container">
+    <!-- Left: Content -->
+    <div class="hero-text">
+      <h1>Discover Your Next Journey</h1>
+      <p>Immerse yourself in handpicked premium experiences tailored to challenge your limits and redefine your perspective.</p>
+    </div>
+
+    <!-- Right: Animated Card Deck -->
+    <div class="deck-wrapper">
+      <div class="card-deck">
+        <!-- Card 1 -->
+        <div class="card" style="background:white">
+          <div class="card-content">
+            <h3>Serene Coastlines</h3>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="card" style="background:white">
+          <div class="card-content">
+            <h3>Majestic Peaks</h3>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="card" style="background:white">
+          <div class="card-content">
+            <h3>Hidden Valleys</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation UI -->
+      <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn">←</button>
+        <button class="nav-btn" id="nextBtn">→</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const deck = document.querySelector('.card-deck');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+
+    function swipeNext() {
+      const cards = deck.querySelectorAll('.card');
+      if (cards.length === 0) return;
+      
+      const topCard = cards[0];
+      
+      // 1. Trigger the out-of-frame CSS transition
+      topCard.classList.add('swipe-left');
+      
+      // 2. Cycle DOM element position after animation finishes
+      setTimeout(() => {
+        topCard.classList.remove('swipe-left');
+        deck.appendChild(topCard);
+      }, 600); 
+    }
+
+    function swipePrev() {
+      const cards = deck.querySelectorAll('.card');
+      if (cards.length === 0) return;
+      
+      const lastCard = cards[cards.length - 1];
+      
+      // 1. Instantly stage the card far right off-screen out of sight
+      lastCard.style.transition = 'none';
+      lastCard.classList.add('swipe-right');
+      
+      // 2. Move node to top stack index position 
+      deck.insertBefore(lastCard, cards[0]);
+      
+      // 3. Force browser paint cycle recalculation 
+      lastCard.offsetHeight; 
+      
+      // 4. Restore transition & clear state class to slide back in
+      lastCard.style.transition = '';
+      lastCard.classList.remove('swipe-right');
+    }
+
+    nextBtn.addEventListener('click', swipeNext);
+    prevBtn.addEventListener('click', swipePrev);
+  </script>
+</body>
+</html>

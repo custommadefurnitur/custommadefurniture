@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Custom Made Furniture social preview</title>
+  <desc id="desc">A branded preview card for Custom Made Furniture.</desc>
+  <rect width="1200" height="630" fill="#f3e5d8"/>
+  <rect x="70" y="70" width="1060" height="490" fill="#4c1a17" rx="28"/>
+  <rect x="118" y="118" width="384" height="384" fill="#d4bea9" rx="20"/>
+  <path d="M166 376h268v54H166zM194 294h212c43 0 78 35 78 78v30H142v-30c0-43 35-78 78-78z" fill="#700635"/>
+  <path d="M222 430h36v58h-36zM390 430h36v58h-36z" fill="#4c1a17"/>
+  <text x="560" y="238" fill="#f3e5d8" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="700">Custom Made</text>
+  <text x="560" y="320" fill="#d4bea9" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="700">Furniture</text>
+  <text x="560" y="388" fill="#f3e5d8" font-family="Arial, Helvetica, sans-serif" font-size="30">Luxury furniture built for your space</text>
+  <text x="560" y="440" fill="#d4bea9" font-family="Arial, Helvetica, sans-serif" font-size="24">Sofas • Wardrobes • Tables • Beds • Chairs</text>
+</svg>
