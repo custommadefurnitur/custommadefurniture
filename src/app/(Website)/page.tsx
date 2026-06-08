@@ -108,6 +108,7 @@ export default async function IndexPage() {
             width={1920}
             height={1080}
             unoptimized
+            fetchPriority= "high"
             alt={web?.businessname || "Hero Banner"}
             className="w-full h-full object-cover object-top"
             loading='eager'
@@ -158,7 +159,7 @@ export default async function IndexPage() {
             >
               <Link className="w-full aspect-square block relative overflow-hidden rounded-md" href="/blog" aria-label={`Read our latest blog post in category ${post.category}`}>
                 <Image 
-                  src={post?.mainImage ? urlFor(post.mainImage).auto('format').dpr(2).quality(75).url() : '/loading.gif'} 
+                  src={post?.mainImage ? urlFor(post.mainImage).auto('format').quality(50).url() : '/loading.gif'} 
                   unoptimized 
                   alt={post.category || "Post thumbnail"} 
                   width={200}
@@ -183,7 +184,7 @@ export default async function IndexPage() {
           
           <div className="relative w-full rounded-xl overflow-hidden shadow-md bg-zinc-200">
             <Image 
-              src={offer?.image ? urlFor(offer.image).auto('format').dpr(2).quality(75).url() : '/loading.gif'} 
+              src={offer?.image ? urlFor(offer.image).auto('format').quality(75).url() : '/loading.gif'} 
               alt={offer?.heading || "Special Offer"} 
               width={1920} 
               height={540} 
