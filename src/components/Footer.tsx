@@ -51,7 +51,7 @@ export const Footer = async () => {
       {/* Top Section */}
       <div className="mb-8">
         <h2 className="text-2xl text-palette-brown font-black">{details.businessname}</h2>
-        <p className="text-sm text-grey-500/40 font-semibold">All Copyrights are claimed</p>
+        <p className="text-sm text-slate-900/40 font-semibold">All Copyrights are claimed</p>
       </div>
 
       {/* Grid Layout Fix */}
@@ -72,7 +72,7 @@ export const Footer = async () => {
             </Link>
           </h4>
           <h5 className="text-sm font-bold mt-2">Address:</h5>
-          <p className="text-sm text-gray-700 whitespace-pre-line">+91{details.address}</p>
+          <p className="text-sm text-slate-700 whitespace-pre-line">+91{details.address}</p>
         </div>
 
         {/* Social Links */}
@@ -80,7 +80,7 @@ export const Footer = async () => {
           <h2 className="text-xl text-palette-maroon font-bold tracking-tight mb-2">Social Links</h2>
           <div className="flex flex-col gap-1">
             {social.map((link: SocialLink, index: number) => (
-              <Link key={index} href={link.url} className="text-base text-palette-brown font-semibold hover:underline" target="_blank" rel="noopener noreferrer">
+              <Link key={index} href={link.url} className="text-base text-slate-700 font-semibold hover:underline" target="_blank" rel="noopener noreferrer">
                 {link.name}
               </Link>
             ))}
@@ -92,7 +92,7 @@ export const Footer = async () => {
           <h2 className="text-xl text-palette-maroon font-bold tracking-tight mb-2">Navigation Links</h2>
           <div className="flex flex-col gap-1">
             {links.map((link: NavLink, index: number) => (
-              <Link key={index} href={link.path} className="text-base text-palette-brown font-semibold hover:underline">
+              <Link key={index} href={link.path} className="text-base text-slate-700 font-semibold hover:underline">
                 {link.name}
               </Link>
             ))}
@@ -104,7 +104,7 @@ export const Footer = async () => {
       <div className="mt-8 pt-4 border-t border-palette-brown/10 text-center text-xs text-gray-500">
         <p>
           This is created by ritish :{' '}
-          <Link href="https://ritish-fortiscerebrox.vercel.app/" className="text-blue-500 font-semibold hover:underline">
+          <Link href="https://ritish-fortiscerebrox.vercel.app/" className="text-blue-700 font-semibold hover:underline" aria-label="Visit developer portfolio of Ritish">
             Visit Portfolio
           </Link>
         </p>

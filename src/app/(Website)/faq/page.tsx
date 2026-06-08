@@ -117,10 +117,11 @@ export default function FAQPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search frequently asked questions..."
+              aria-label="Search frequently asked questions"
               className="w-full p-3 pl-10 rounded-xl bg-palette-beige/60 text-palette-brown placeholder-palette-brown/50 focus:outline-none focus:ring-2 focus:ring-palette-maroon/50 border border-palette-brown/10 text-sm shadow-sm transition-all"
             />
             <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-palette-brown/50 pointer-events-none">
-              <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.604 10.604z" />
               </svg>
             </div>
@@ -128,6 +129,7 @@ export default function FAQPage() {
               <button 
                 onClick={() => setSearchQuery('')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-palette-brown/40 hover:text-palette-maroon p-1 text-xs transition-colors"
+                aria-label="Clear search"
                 title="Clear search"
               >
                 ✕
@@ -143,6 +145,7 @@ export default function FAQPage() {
               </span>
               <button
                 onClick={() => setShowAll(!showAll)}
+                aria-expanded={showAll}
                 className="px-3 py-1 bg-palette-cream text-palette-maroon hover:bg-palette-maroon hover:text-palette-cream font-bold rounded-lg border border-palette-maroon/20 transition-all shadow-sm"
               >
                 {showAll ? 'Show Top 5 Only' : `Show All (${faqs.length})`}
@@ -183,6 +186,7 @@ export default function FAQPage() {
                   <button 
                     onClick={() => handleLike(faq._id)}
                     disabled={isThisItemLoading}
+                    aria-label={`Mark as helpful. Helpful votes: ${faq.helpfulVotes}`}
                     className={`absolute bottom-4 right-4 flex items-center gap-1 px-2.5 py-1 rounded-md border border-palette-brown/20 transition-colors text-xs font-bold ${
                       isThisItemLoading ? 'opacity-50 cursor-not-allowed' : ''
                     } ${
@@ -196,12 +200,14 @@ export default function FAQPage() {
                     </span>
 
                     <svg 
-                      xmlns="http://w3.org" 
+                      xmlns="http://www.w3.org/2000/svg" 
                       viewBox="0 0 24 24" 
                       fill={isLiked ? "currentColor" : "none"}
                       stroke="currentColor"
                       strokeWidth="2"
+                      aria-label={isLiked ? 'You have marked this FAQ as helpful' : 'Mark this FAQ as helpful'}
                       className={`w-4 h-4 ${isLiked ? 'text-palette-cream' : 'text-palette-maroon group-hover:text-palette-cream'}`}
+                      aria-hidden="true"
                     >
                       <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
                     </svg>
@@ -217,8 +223,10 @@ export default function FAQPage() {
           <p className="text-xs text-palette-beige mb-4 opacity-90">Submit your inquiry here directly to the owner.</p>
           
           <form onSubmit={handleSubmitQuestion} className="space-y-4">
+            <label htmlFor="faq-page-textarea" className="sr-only">Type your question here</label>
             <textarea
-            suppressHydrationWarning
+              id="faq-page-textarea"
+              suppressHydrationWarning
               value={newQuestion}
               onChange={(e) => setNewQuestion(e.target.value)}
               placeholder="Ask away..."
@@ -230,6 +238,7 @@ export default function FAQPage() {
             <button
               type="submit"
               disabled={isLoading}
+              aria-label="Submit your question to the owner"
               className="w-full py-2 px-4 bg-palette-maroon hover:bg-palette-maroon/90 text-palette-cream rounded font-bold text-sm transition-all shadow focus:outline-none focus:ring-2 focus:ring-palette-cream/50 disabled:opacity-50"
             >
               {isLoading ? 'Sending...' : 'Submit'}

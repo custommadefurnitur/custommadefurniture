@@ -84,7 +84,7 @@ export default async function AboutPage() {
           <div className="relative aspect-[4/3] w-full border-4 border-[#4C1A17] bg-[#D4BEA9] rounded overflow-hidden">
             {details.businesslogo && (
               <Image 
-                src={urlFor(details.businesslogo).url()} 
+                src={urlFor(details.businesslogo).auto('format').quality(75).dpr(2).url()} 
                 width={200} 
                 height={200}
                 alt={`${details.businessname} Logo`} 
@@ -116,7 +116,7 @@ export default async function AboutPage() {
                 <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-[#4C1A17] bg-[#F3E5D8]">
                   {member.image && (
                     <Image
-                      src={urlFor(member.image).url()}
+                      src={urlFor(member.image).auto('format').dpr(2).quality(75).url()}
                       width={200} 
                       height={200}
                       alt={member.name}
@@ -141,7 +141,7 @@ export default async function AboutPage() {
           <div className="md:col-span-1 border-2 border-[#4C1A17] rounded-lg overflow-hidden bg-[#D4BEA9] flex flex-col">
             <div className="relative aspect-3/4 w-full bg-[#F3E5D8]">
               <div className="max-w-7xl  mx-auto my-4">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1943.2487051524326!2d80.2164038!3d13.0676314!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52616a744502b5%3A0x1e84faf419f38c6b!2sCustom%20Made%20Furniture%20-%20C%20M%20F!5e0!3m2!1sen!2sin!4v1780063124583!5m2!1sen!2sin" width="400" height="350"  loading="lazy" className="w-full rounded-lg border-palette-cream border-2"></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1943.2487051524326!2d80.2164038!3d13.0676314!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52616a744502b5%3A0x1e84faf419f38c6b!2sCustom%20Made%20Furniture%20-%20C%20M%20F!5e0!3m2!1sen!2sin!4v1780063124583!5m2!1sen!2sin" rel="preconnect" width="400" height="350"  loading="lazy" className="w-full rounded-lg border-palette-cream border-2" title="Location of Custom Made Furniture Choolamedu"></iframe>
               </div>
             </div>
             <div className="p-3 text-center bg-[#4C1A17] text-[#F3E5D8] font-semibold text-xs tracking-wider uppercase">

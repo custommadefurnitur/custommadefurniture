@@ -27,6 +27,7 @@ const Call = async() => {
         prefetch={false}
         rel="noopener noreferrer"
         className="wa-pulse-effect flex items-center justify-center w-12 h-12 bg-[#0D47A1] text-white rounded-full shadow-lg transition-transform duration-300 hover:scale-110 hover:bg-[#128C7E]"
+        aria-label="Call us directly"
       > 
         <IoMdCall className="text-3xl" />
       </Link> 

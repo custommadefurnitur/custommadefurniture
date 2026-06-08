@@ -176,7 +176,7 @@ export default async function ProductPage({ params }: Props) {
                         <span className="font-bold text-sm text-[#4C1A17]">
                           {review.reviewerName || "Anonymous"}
                         </span>
-                        <span className="text-yellow-600 font-bold text-sm">
+                        <span className="text-yellow-600 font-bold text-sm" aria-label={`${review.rating} out of 5 stars`}>
                           {"★".repeat(review.rating)}{"☆".repeat(Math.max(0, 5 - review.rating))}
                         </span>
                       </div>
@@ -215,7 +215,7 @@ export default async function ProductPage({ params }: Props) {
                 {product.title}
               </h1>
 
-              <p className="text-2xl font-bold text-[#700635] mb-6">
+              <p className="text-2xl font-bold text-emerald-900 mb-6">
                 ${product.price.toLocaleString()}
               </p>
 

@@ -153,7 +153,7 @@ function VerifyOtpContent() {
 
           <p className="text-xs text-gray-500 font-[Inter] text-center mt-2">
             Need a different email account address?{" "}
-            <a href="/signup" className="font-bold text-palette-brown underline hover:text-black">
+            <a href="/signup" className="font-bold text-palette-brown underline hover:text-black" aria-label="sign up with a different email address">
               Sign up again
             </a>
           </p>

@@ -76,7 +76,7 @@ export default async function ContactPage() {
                 <div>
                   <h4 className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">Direct Hotline</h4>
                   <p className="text-xs sm:text-sm text-gray-600 font-[Inter] mt-0.5">Call me:{' '}
-                    <Link href={`tel:+91${details.phone}`} className="hover:underline font-medium">{details.phone}</Link>
+                    <Link href={`tel:+91${details.phone}`} className="hover:underline font-medium" aria-label='Call to Action'>{details.phone}</Link>
                   </p>
                 </div>
               </div>
@@ -99,7 +99,7 @@ export default async function ContactPage() {
               <div className="flex flex-wrap gap-3 font-[Inter] text-xs font-semibold">
                 <div className="flex flex-col gap-1">
                   {social.map((link: SocialLink, index: number) => (
-                    <Link key={index} href={link.url} className="text-base text-palette-brown hover:underline" target="_blank" rel="noopener noreferrer">
+                    <Link key={index} href={link.url} className="text-base text-palette-brown hover:underline" target="_blank" rel="noopener noreferrer" aria-label={`Visit our ${link.name} page`}>
                     {link.name}
                     </Link>
               ))}

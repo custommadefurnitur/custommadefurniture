@@ -78,15 +78,17 @@ ${specFields}
 
   return (
     <div className="mt-8 pt-6 border-t border-[#D4BEA9] flex flex-col sm:flex-row gap-4">
-      <button 
-        onClick={() => changeStep('CHOOSE_METHOD')}
+<button 
+        onClick={() => changeStep("CHOOSE_METHOD")}
         className="flex-1 bg-[#700635] text-[#F3E5D8] hover:bg-[#4C1A17] text-center font-bold tracking-wide py-4 px-6 rounded-xl transition-all shadow-md active:scale-[0.98]"
+        aria-label="Open contact options for product customization"
       >
         I Want like this
       </button>
       <Link 
         href="/products" 
         className="sm:w-1/3 bg-transparent border border-[#700635] text-[#700635] hover:bg-[#700635]/10 text-center font-bold tracking-wide py-4 px-6 rounded-xl transition-all flex items-center justify-center"
+        aria-label="Back to product grid"
       >
         Back to Grid
       </Link>
@@ -99,6 +101,7 @@ ${specFields}
             <button 
               onClick={() => changeStep('CLOSED')}
               className="absolute top-4 right-4 text-xl font-bold opacity-60 hover:opacity-100"
+              aria-label="Close modal"
             >
               ✕
             </button>
@@ -114,12 +117,14 @@ ${specFields}
                   <button 
                     onClick={handleWhatsAppRedirect}
                     className="w-full bg-[#700635] hover:bg-[#700635]/90 text-white font-bold py-3 px-4 rounded-xl transition-all"
+                    aria-label="Chat on WhatsApp"
                   >
                     💬 Chat on WhatsApp
                   </button>
                   <button 
-                    onClick={() => changeStep('PHONE_CONFIRM')}
+                    onClick={() => changeStep("PHONE_CONFIRM")}
                     className="w-full bg-[#4C1A17] hover:bg-[#4C1A17]/90 text-white font-bold py-3 px-4 rounded-xl transition-all"
+                    aria-label="Make a Phone Call"
                   >
                     📞 Make a Phone Call
                   </button>
@@ -136,14 +141,16 @@ ${specFields}
                 </div>
                 <div className="flex gap-3">
                   <button 
-                    onClick={() => changeStep('PHONE_PREPARE')}
+                    onClick={() => changeStep("PHONE_PREPARE")}
                     className="flex-1 bg-[#700635] text-white font-bold py-3 px-4 rounded-xl transition-all"
+                    aria-label="Yes, I am ready to speak with the owner"
                   >
                     Yes, I am ready
                   </button>
                   <button 
-                    onClick={() => changeStep('CHOOSE_METHOD')}
+                    onClick={() => changeStep("CHOOSE_METHOD")}
                     className="flex-1 bg-transparent border border-[#4C1A17] font-semibold py-3 px-4 rounded-xl text-[#4C1A17] transition-all"
+                    aria-label="Go back to choose method"
                   >
                     Go Back
                   </button>
@@ -162,13 +169,18 @@ ${specFields}
                 <div className="space-y-3 border-y border-[#D4BEA9] py-4">
                   {/* ITEM 1 */}
                   <label 
-                    onClick={() => toggleCheckItem('dimensions')}
                     className="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-[#D4BEA9]/20 transition-all select-none"
                   >
+                    <input 
+                      type="checkbox"
+                      checked={checklist.dimensions}
+                      onChange={() => toggleCheckItem('dimensions')}
+                      className="sr-only"
+                    />
                     <div className={`mt-0.5 w-5 h-5 flex items-center justify-center rounded border-2 transition-all ${
                       checklist.dimensions ? 'bg-[#700635] border-[#700635] text-white' : 'border-[#4C1A17]/40'
                     }`}>
-                      {checklist.dimensions && <span className="text-xs font-bold">✓</span>}
+                      {checklist.dimensions && <span className="text-xs font-bold" aria-label='checked'>✓</span>}
                     </div>
                     <span className={`text-sm font-medium ${checklist.dimensions ? 'line-through opacity-60' : ''}`}>
                       I have mapped my room dimension limits (Length × Width).
@@ -177,13 +189,18 @@ ${specFields}
 
                   {/* ITEM 2 */}
                   <label 
-                    onClick={() => toggleCheckItem('upholstery')}
                     className="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-[#D4BEA9]/20 transition-all select-none"
                   >
+                    <input 
+                      type="checkbox"
+                      checked={checklist.upholstery}
+                      onChange={() => toggleCheckItem('upholstery')}
+                      className="sr-only"
+                    />
                     <div className={`mt-0.5 w-5 h-5 flex items-center justify-center rounded border-2 transition-all ${
                       checklist.upholstery ? 'bg-[#700635] border-[#700635] text-white' : 'border-[#4C1A17]/40'
                     }`}>
-                      {checklist.upholstery && <span className="text-xs font-bold">✓</span>}
+                      {checklist.upholstery && <span className="text-xs font-bold" aria-label='checked'>✓</span>}
                     </div>
                     <span className={`text-sm font-medium ${checklist.upholstery ? 'line-through opacity-60' : ''}`}>
                       I know my preferred upholstery textile type or custom leather tone styles.
@@ -192,13 +209,18 @@ ${specFields}
 
                   {/* ITEM 3 */}
                   <label 
-                    onClick={() => toggleCheckItem('timeline')}
                     className="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-[#D4BEA9]/20 transition-all select-none"
                   >
+                    <input 
+                      type="checkbox"
+                      checked={checklist.timeline}
+                      onChange={() => toggleCheckItem('timeline')}
+                      className="sr-only"
+                    />
                     <div className={`mt-0.5 w-5 h-5 flex items-center justify-center rounded border-2 transition-all ${
                       checklist.timeline ? 'bg-[#700635] border-[#700635] text-white' : 'border-[#4C1A17]/40'
                     }`}>
-                      {checklist.timeline && <span className="text-xs font-bold">✓</span>}
+                      {checklist.timeline && <span className="text-xs font-bold" aria-label='checked'>✓</span>}
                     </div>
                     <span className={`text-sm font-medium ${checklist.timeline ? 'line-through opacity-60' : ''}`}>
                       I have decided on my ideal home delivery timeline window requirements.
@@ -218,9 +240,10 @@ ${specFields}
     }}
     className={`text-center font-bold py-3.5 px-4 rounded-xl block shadow transition-all duration-300 ${
       isReadyToCall 
-        ? 'bg-[#4C1A17] hover:bg-[#700635] text-white cursor-pointer active:scale-[0.99]' 
-        : 'bg-neutral-300 text-neutral-500 cursor-not-allowed border border-neutral-400 opacity-60'
+        ? 'bg-[#4C1A17] hover:bg-[#700635] text-white cursor-pointer active:scale-[0.99] aria-label="Call owner now"' 
+        : 'bg-neutral-300 text-neutral-500 cursor-not-allowed border border-neutral-400 opacity-60 aria-label="Check all items to unlock call"'
     }`}
+    aria-label={isReadyToCall ? "Call owner now" : "Check all items to unlock call"}
   >
     {isReadyToCall ? '🚀 Call Owner Now' : '🔒 Check all items to unlock call'}
   </a>
@@ -228,6 +251,7 @@ ${specFields}
   <button
     type="button"
     onClick={() => changeStep('PHONE_CONFIRM')}
+    aria-label="Go back to phone confirmation step"
     className="w-full bg-transparent border border-[#D4BEA9] font-medium py-2.5 px-4 rounded-xl text-[#4C1A17]/80 hover:bg-[#D4BEA9]/20 transition-all"
     >
     Back

@@ -28,12 +28,15 @@ export default function Menu({ children }: { children: React.ReactNode }) {
       <button 
         onClick={toggleMenu}
         className=""
+        aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+        aria-expanded={isOpen}
       >
         <Image 
           src={isOpen ? "/closethemenu.jpg" : "/openthemenu.png"} 
           width={32} 
           height={32} 
-          alt={isOpen ? "Close menu icon" : "Open menu icon"} 
+          alt="" 
+          aria-hidden="true"
           loading="eager" 
           className="rounded-full w-8 h-8"
           unoptimized 
@@ -50,7 +53,7 @@ export default function Menu({ children }: { children: React.ReactNode }) {
 
       {/* 3. Sliding Wrapper for your Sidebar Child */}
       <div 
-  className={`fixed top-0 h-dvh z-50 transition-all duration-300 ease-in-out translate-x-0
+  className={`fixed top-0 h-dvh z-50 transition-all duration-300 ease-in-out translate-x-0 
     ${isOpen ? 'left-0 ' : '-left-full'} 
     ${isScrolled ? '-mt-4 -ml-2' : ''}`}
 >

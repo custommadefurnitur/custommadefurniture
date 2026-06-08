@@ -8,5 +8,5 @@ import { client } from './client'
 const builder = createImageUrlBuilder(client);
 
 export function urlFor(source: SanityImageSource) {
-  return builder.image(source)
+  return builder.image(source);
 }

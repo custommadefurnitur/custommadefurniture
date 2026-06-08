@@ -24,13 +24,14 @@ const Whatsapp =async () => {
       `}} />
 
       <Link 
-      prefetch={false}
+        prefetch={false}
         href={`https://wa.me/91${phoneNumber}?text=${encodeURIComponent(message)}`}
         target="_blank"
         rel="noopener noreferrer"
         className="wa-pulse-effect flex items-center justify-center w-12 h-12 bg-[#25D366] text-white rounded-full shadow-lg transition-transform duration-300 hover:scale-110 hover:bg-[#128C7E]"
+        aria-label="Contact us on WhatsApp"
       > 
-        <ImWhatsapp className="text-3xl" />
+        <ImWhatsapp className="text-3xl" aria-label="WhatsApp" />
       </Link> 
     </div> 
   ); 

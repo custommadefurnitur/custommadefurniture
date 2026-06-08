@@ -130,7 +130,7 @@ function ResetPasswordContent() {
         <div className="text-center mt-6 pt-4 border-t border-palette-beige/30">
           <p className="text-xs text-gray-500 font-[Inter]">
             Need another recovery message?{" "}
-            <Link href="/forgot-password" className="font-bold text-palette-brown underline hover:text-black">
+            <Link href="/forgot-password" className="font-bold text-palette-brown underline hover:text-black" aria-label="Navigate to forgot password page">
               Try again
             </Link>
           </p>

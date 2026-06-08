@@ -157,7 +157,7 @@ export default async function UserDashboardPage() {
                       </h4>
                       <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider absolute top-6 right-6 border ${
                         item.isPublished 
-                          ? 'bg-emerald-100 text-emerald-800 border-emerald-200' 
+                          ? 'bg-emerald-100 text-emerald-900 border-emerald-200' 
                           : 'bg-amber-100 text-amber-800 border-amber-200'
                       }`}>
                         {item.isPublished ? 'Answered' : 'Pending'}
@@ -218,13 +218,14 @@ export default async function UserDashboardPage() {
                   <Link
                     key={product.slug}
                     href={`/products/${product.slug}`}
+                    aria-label={`View details for ${product.title}`}
                     className="group rounded-3xl border border-palette-beige/60 bg-white/70 p-4 transition hover:border-palette-maroon hover:shadow-lg"
                   >
                     <p className="text-base font-semibold text-palette-brown group-hover:text-palette-maroon">
                       {product.title}
                     </p>
                     {typeof product.price === "number" ? (
-                      <p className="mt-2 text-sm text-palette-brown/70">${product.price.toLocaleString()}</p>
+                      <p className="mt-2 text-sm text-emerald-900">${product.price.toLocaleString()}</p>
                     ) : null}
                   </Link>
                 ))}
@@ -255,7 +256,9 @@ export default async function UserDashboardPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 {postItems.map((post) => (
                   <Link
+                  
                     key={post.slug}
+                    aria-label={`Read blog post titled ${post.title} in category ${post.category || 'Uncategorized'}`}
                     href={`/blog/${post.slug}`}
                     className="group rounded-3xl border border-palette-beige/60 bg-white/70 p-4 transition hover:border-palette-maroon hover:shadow-lg"
                   >

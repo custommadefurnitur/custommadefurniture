@@ -4,6 +4,7 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { ProductGalleryItem } from '@/app/(Website)/products/page';
+import { urlFor } from '@/sanity/lib/image';
 
 interface SliderProps {
   gallery: ProductGalleryItem[];
@@ -25,7 +26,7 @@ export default function ImageGallerySlider({ gallery, title }: SliderProps) {
   if (!hasImages) {
     return (
       <div className="relative aspect-square w-full rounded-2xl bg-[#D4BEA9]/30 border border-[#D4BEA9] flex items-center justify-center">
-        <Image src="/loading.gif" alt="Loading" width={50} height={50} unoptimized />
+        <Image src="/loading.gif" alt="" aria-hidden="true" width={50} height={50} unoptimized />
       </div>
     );
   }
@@ -76,7 +77,7 @@ export default function ImageGallerySlider({ gallery, title }: SliderProps) {
         className="relative aspect-square w-full rounded-2xl bg-[#D4BEA9]/30 border border-[#D4BEA9] overflow-hidden group shadow-sm select-none touch-pan-y"
       >
         <Image
-          src={activeImage.url}
+          src={urlFor(activeImage.assetId || activeImage.url).width(600).height(600).auto('format').quality(75).url()}
           alt={`${title} structural view ${currentIndex + 1}`}
           fill
           priority
@@ -89,12 +90,14 @@ export default function ImageGallerySlider({ gallery, title }: SliderProps) {
           <>
             <button
               onClick={handlePrev}
+              aria-label="Previous slide"
               className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 bg-[#4C1A17]/80 hover:bg-[#700635] text-[#F3E5D8] w-10 h-10 rounded-full items-center justify-center font-bold shadow transition-all active:scale-95"
             >
               ←
             </button>
             <button
               onClick={handleNext}
+              aria-label="Next slide"
               className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 bg-[#4C1A17]/80 hover:bg-[#700635] text-[#F3E5D8] w-10 h-10 rounded-full items-center justify-center font-bold shadow transition-all active:scale-95"
             >
               →
@@ -116,6 +119,7 @@ export default function ImageGallerySlider({ gallery, title }: SliderProps) {
                   : 'bg-[#4C1A17]/40 hover:bg-[#4C1A17]/70 w-3'
               }`}
               aria-label={`Go to slide ${idx + 1}`}
+              aria-current={idx === currentIndex ? "true" : undefined}
             />
           ))}
         </div>

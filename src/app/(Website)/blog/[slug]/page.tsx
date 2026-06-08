@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await client.fetch(SINGLE_POST_QUERY, { slug });
   if (!post) return {};
 
-  const imageUrl = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).url() : undefined;
+  const imageUrl = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).auto('format').quality(75).url() : undefined;
 
   return {
     ...createSeoMetadata({
@@ -65,13 +65,13 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   const postUrl = `${SITE_URL}/blog/${post.slug}`;
-  const imageUrl = post.mainImage ? urlFor(post.mainImage).url() : '/loading.gif';
+  const imageUrl = post.mainImage ? urlFor(post.mainImage).auto('format').dpr(2).quality(75).url() : '/loading.gif';
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
-    image: post.mainImage ? [urlFor(post.mainImage).width(1200).height(630).url()] : undefined,
+    image: post.mainImage ? [urlFor(post.mainImage).width(1200).height(630).auto('format').quality(75).url()] : undefined,
     datePublished: post.uploadedDate,
     mainEntityOfPage: postUrl,
     publisher: {
@@ -96,12 +96,12 @@ export default async function BlogPostPage({ params }: Props) {
             unoptimized
             className="w-[98%] h-auto border-palette-cream object-cover rounded mx-auto mb-5"
           />
-          <ShareButton title={post.title} text={post.description} url={postUrl} />
+          <ShareButton title={post.title} text={post.description} url={postUrl} aria-label="Share this blog post" />
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
           <h2 className="text-palette-brown font-semibold text-[15px] xs:text-[18px] sm:text-[20px]">{post.title}</h2>
-          <WishlistButton itemType="post" slug={post.slug} />
+          <WishlistButton itemType="post" slug={post.slug} aria-label="Add to wishlist" />
         </div>
         
         <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', fontWeight: 'bold' }} className="px-3 py-1 bg-palette-cream text-palette-brown rounded-bl rounded-tr absolute top-1 right-1">
@@ -119,7 +119,7 @@ export default async function BlogPostPage({ params }: Props) {
           ))}
         </div>
 
-        <p className="text-palette-brown font-[inter] text-sm xs:text-[16px] sm:text-[18px]">{post.description}</p>
+        <p className="text-slate-700 font-[inter] text-sm xs:text-[16px] sm:text-[18px]">{post.description}</p>
         
         <small className="text-gray-800">
           Published on: {new Date(post.uploadedDate).toLocaleDateString()}

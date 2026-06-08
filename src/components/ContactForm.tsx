@@ -79,8 +79,9 @@ export default function ContactForm() {
         
         {/* Name Fields */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">Your Name</label>
+          <label htmlFor="contact-name" className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">Your Name</label>
           <input
+            id="contact-name"
             type="text"
             name="name"
             required
@@ -97,8 +98,9 @@ export default function ContactForm() {
 
         {/* Email Address */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">Email Address</label>
+          <label htmlFor="contact-email" className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">Email Address</label>
           <input
+            id="contact-email"
             type="email"
             name="email"
             required
@@ -114,8 +116,9 @@ export default function ContactForm() {
 
         {/* Topic Subject */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">Subject</label>
+          <label htmlFor="contact-subject" className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">Subject</label>
           <input
+            id="contact-subject"
             type="text"
             name="subject"
             required
@@ -131,8 +134,9 @@ export default function ContactForm() {
 
         {/* Message Input Box */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">Project Details</label>
+          <label htmlFor="contact-message" className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">Project Details</label>
           <textarea
+            id="contact-message"
             name="message"
             rows={5}
             required
@@ -149,6 +153,7 @@ export default function ContactForm() {
         {/* Submit Interaction Node */}
         <button
           type="submit"
+          aria-label="Submit your contact inquiry to the owner"
           disabled={isSubmitting}
           className="w-full py-3 mt-2 bg-[#700635] text-white font-semibold text-sm rounded-xl hover:bg-[#4C1A17] transition disabled:bg-gray-400 disabled:cursor-not-allowed shadow-sm"
         >

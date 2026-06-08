@@ -5,6 +5,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ProductItem } from '@/app/(Website)/products/page';
+import { urlFor } from '@/sanity/lib/image';
 
 const shuffleArray = (array: ProductItem[]) => {
   const newArray = [...array];
@@ -91,6 +92,7 @@ export default function ProductGridClient({ initialProducts }: Props) {
           {searchQuery && (
             <button 
               onClick={() => setSearchQuery('')}
+              aria-label="Clear search query"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-palette-brown/60 hover:text-palette-brown"
             >
               ✕
@@ -106,6 +108,7 @@ export default function ProductGridClient({ initialProducts }: Props) {
               setSelectedCategory(e.target.value);
               setCurrentPage(1);
             }}
+            aria-label='Choose the category'
             className="w-full px-4 py-2 border border-palette-brown rounded-lg bg-palette-beige text-palette-brown focus:outline-none focus:ring-2 focus:ring-palette-brown cursor-pointer"
           >
             {categories.map((category) => (
@@ -122,21 +125,25 @@ export default function ProductGridClient({ initialProducts }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {currentProducts.map((product) => {
             const hasImage = product.gallery && product.gallery.length > 0;
-            const imageSrc = hasImage ? product.gallery[0].url : '/loading.gif';
+            const imageSrc = hasImage 
+              ? urlFor(product.gallery[0].assetId || product.gallery[0].url).width(400).height(400).auto('format').quality(75).url() 
+              : '/loading.gif';
 
             return (
               <Link 
                 key={product._id} 
                 href={`/products/${product.slug}`}
                 className="group border border-palette-brown bg-palette-beige rounded-lg p-4 flex flex-col justify-between hover:border-neutral-700 transition-all duration-300"
+                aria-label={`View details for ${product.title}`}
               >
                 <div className="relative w-full aspect-square border-palette-cream rounded mb-4 overflow-hidden">
                   <Image 
                     src={imageSrc} 
-                    alt={product.title}
+                    alt={`${product.title} - Custom ${product.category} Furniture`}
                     width={400}
                     height={400}
                     unoptimized
+                    loading="lazy"
                     className="object-cover aspect-square w-full h-auto group-hover:scale-105 transition-transform duration-500"
                   />
                   <span className="absolute top-3 left-3 bg-palette-brown text-xs px-2 py-1 rounded text-neutral-300" suppressHydrationWarning>
@@ -148,10 +155,10 @@ export default function ProductGridClient({ initialProducts }: Props) {
                   <h3 className="font-semibold text-lg line-clamp-1 text-palette-brown group-hover:text-palette-maroon transition-colors">
                     {product.title}
                   </h3>
-                  <span className="text-emerald-700 font-medium">${product.price}</span>
+                  <span className="text-emerald-900 font-medium">${product.price}</span>
                 </div>
 
-                <p className="text-sm text-palette-brown line-clamp-2 mt-auto">
+                <p className="text-sm text-slate-700 line-clamp-2 mt-auto">
                   {product.shortdescription}
                 </p>
               </Link>
@@ -159,7 +166,7 @@ export default function ProductGridClient({ initialProducts }: Props) {
           })}
         </div>
       ) : (
-        <div className="text-center py-20 text-neutral-500 flex-1">
+        <div className="text-center py-20 text-slate-700 flex-1">
           No products found matching your criteria.
         </div>
       )}
@@ -170,6 +177,7 @@ export default function ProductGridClient({ initialProducts }: Props) {
           <button 
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
+            aria-label="Previous page"
             className="p-2 bg-palette-brown text-white hover:bg-neutral-700 disabled:opacity-30 rounded-full transition-all"
           >
             ←
@@ -182,6 +190,8 @@ export default function ProductGridClient({ initialProducts }: Props) {
                 <button
                   key={pageNum}
                   onClick={() => setCurrentPage(pageNum)}
+                  aria-label={`Go to page ${pageNum}`}
+                  aria-current={currentPage === pageNum ? "page" : undefined}
                   className={`w-8 h-8 rounded-full text-sm font-medium transition-all ${
                     currentPage === pageNum 
                       ? 'bg-white text-black font-bold scale-110' 
@@ -197,6 +207,7 @@ export default function ProductGridClient({ initialProducts }: Props) {
           <button 
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
+            aria-label="Next page"
             className="p-2 bg-palette-brown text-white hover:bg-neutral-700 disabled:opacity-30 rounded-full transition-all"
           >
             →

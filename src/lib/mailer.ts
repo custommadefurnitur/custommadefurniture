@@ -76,7 +76,7 @@ export async function sendResetPasswordEmail({ toEmail, userName, resetToken }: 
         <p style="color: #4a5568; font-size: 14px; line-height: 1.6;">We received a request to reset the account password paired with this email profile address. Click the action block button below to configure a new password:</p>
         
         <div style="text-align: center; margin: 30px 0;">
-          <a href="${resetUrl}" style="display: inline-block; font-size: 14px; font-weight: 700; color: #ffffff; background-color: #451a03; padding: 12px 28px; text-decoration: none; border-radius: 8px; shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+          <a href="${resetUrl}" style="display: inline-block; font-size: 14px; font-weight: 700; color: #ffffff; background-color: #451a03; padding: 12px 28px; text-decoration: none; border-radius: 8px; shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" aria-label="Configure new password now">
             Configure New Password
           </a>
         </div>
@@ -132,7 +132,7 @@ export async function sendContactNotificationToOwner({
           </tr>
           <tr>
             <td style="padding: 6px 0; font-weight: bold; color: #451a03;">Client Email:</td>
-            <td style="padding: 6px 0; color: #3182ce;"><a href="mailto:${clientEmail}">${clientEmail}</a></td>
+            <td style="padding: 6px 0; color: #3182ce;"><a href="mailto:${clientEmail}" aria-label="Reply to client">${clientEmail}</a></td>
           </tr>
           <tr>
             <td style="padding: 6px 0; font-weight: bold; color: #451a03;">Form Topic:</td>

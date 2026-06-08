@@ -13,6 +13,7 @@ export const metadata = createSeoMetadata({
 // Define strict types matching your schema
 export interface ProductGalleryItem {
   url: string;
+  assetId?: string;
 }
 
 export interface FurnitureSpecs {

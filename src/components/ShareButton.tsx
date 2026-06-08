@@ -36,7 +36,7 @@ export default function ShareButton({ title, text, url }: ShareButtonProps) {
       className="absolute bottom-4 right-5 bg-palette-beige text-2xl p-2 rounded cursor-pointer hover:opacity-80 transition-opacity z-10"
       aria-label={`Share ${title}`}
     >
-      <FiShare2 />
+      <FiShare2 aria-label="share"/>
     </button>
   );
 }

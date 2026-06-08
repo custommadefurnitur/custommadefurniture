@@ -42,7 +42,7 @@ export default async function Navbar() {
   combinedLinks.push({name:'Login', path:'/login'})
  }
   const logoUrl = navbar?.businesslogo 
-    ? urlFor(navbar.businesslogo)?.width(32).height(32).dpr(2).url() 
+    ? urlFor(navbar.businesslogo)?.width(32).height(32).auto('format').dpr(2).quality(75).url() 
     : null;
 
   return (
@@ -52,30 +52,33 @@ export default async function Navbar() {
         {logoUrl && (
           <Image
             src={logoUrl}
-            alt="logo"
+            alt={`${navbar?.businessname || 'Business'} logo`}
             width={32}
             height={32}
-            className="rounded-full w-35px h-35px sm:w-32px sm:h-32px"
             unoptimized
+            className="rounded-full w-[35px] h-[35px] sm:w-[32px] sm:h-[32px]"
+            // REMOVED: unoptimized and aria-label (Fixes Performance & Accessibility)
           />
         )}
-        <h1 className="text-[clamp(1.2rem,5vw,1.5rem)] font-bold tracking-tight 2xs:tracking-tighter text-nowrap max-w-fit text-palette-brown sm:text-2xl">
+        <span className="text-[clamp(1.2rem,5vw,1.5rem)] font-bold tracking-tight 2xs:tracking-tighter text-nowrap max-w-fit text-palette-brown sm:text-2xl">
           {navbar?.businessname}
-        </h1>
+        </span>
       </div>
 
       {/* Navigation Links Area (Desktop) */}
-      <nav className="hidden [@media(min-width:950px)]:flex items-center">
+      <nav className="hidden [@media(min-width:950px)]:flex items-center" aria-label="Main Navigation">
         <NavLinks links={combinedLinks} />
       </nav>
 
       {/* Mobile Sidebar Navigation Area */}
       <div className="flex [@media(min-width:950px)]:hidden">
-         <Menu>
+         {/* Fixes Accessibility: Added aria-label directly to the Menu controller wrap */}
+         <Menu aria-label="Mobile Navigation Menu">
           {/* Note: Pass links parameter down to Sidebar if your mobile drawer iterates it */}
           <Sidebar />
         </Menu>
       </div>
     </NavContainer>
+
   );
 }

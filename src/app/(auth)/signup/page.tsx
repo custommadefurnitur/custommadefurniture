@@ -148,7 +148,7 @@ export default function SignUpPage() {
         <div className="text-center mt-6 pt-4 border-t border-palette-beige/30">
           <p className="text-xs text-gray-500 font-[Inter]">
             Already have an active profile?{" "}
-            <Link href="/login" className="font-bold text-palette-brown underline hover:text-black">
+            <Link href="/login" className="font-bold text-palette-brown underline hover:text-black" aria-label="Login button">
               Login here
             </Link>
           </p>

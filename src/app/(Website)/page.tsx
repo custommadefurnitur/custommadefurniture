@@ -67,10 +67,12 @@ export async function getAllProducts(): Promise<ProductItem[]> {
   return await client.fetch(query);
 }
 
+export const revalidate = 3600; 
+
 export default async function IndexPage() {
   const web = await client.fetch(Web_Query);
   const hero = await client.fetch(Hero_Query);
-  const heroImage = hero?.heroimage ? urlFor(hero.heroimage).width(1920).height(1080).dpr(2).url() : null;
+  const heroImage = hero?.heroimage ? urlFor(hero.heroimage).width(1920).height(1080).auto('format').quality(75).dpr(2).url() : null;
   const post = await client.fetch(Post_Query);
   const offer = await client.fetch(Offer_Query);
   const review = await client.fetch(Review_Query);
@@ -105,17 +107,18 @@ export default async function IndexPage() {
             src={heroImage}
             width={1920}
             height={1080}
-            alt={web?.businessname || "Hero Banner"}
-            className="w-full h-full aspect-video object-cover object-top"
-            loading='eager'
             unoptimized
+            alt={web?.businessname || "Hero Banner"}
+            className="w-full h-full object-cover object-top"
+            loading='eager'
+           
           />
         )}
         
         {/* Star Rating Badge */}
         <div className="absolute top-7 left-4 sm:top-8 sm:left-10 md:left-20">
           <h1 className="flex items-center bg-white/40 backdrop-blur-md rounded-xl border-palette-beige border-2 text-palette-brown p-2 sm:p-4 text-xl sm:text-3xl font-black font-[Poppins] tracking-tighter">
-            4.8+<FaStar className="text-yellow-400 text-2xl sm:text-4xl ml-1" />
+            4.8+<FaStar className="text-yellow-400 text-2xl sm:text-4xl ml-1" aria-label="Star rating" />
           </h1>
         </div>
         
@@ -153,9 +156,9 @@ export default async function IndexPage() {
               key={post.category || index} 
               className="rounded-lg w-full border-2 p-2 sm:p-3 border-palette-beige hover:border-palette-brown flex flex-col items-center gap-3 transition-colors duration-300 bg-white"
             >
-              <Link className="w-full aspect-square block relative overflow-hidden rounded-md" href="/blog">
+              <Link className="w-full aspect-square block relative overflow-hidden rounded-md" href="/blog" aria-label={`Read our latest blog post in category ${post.category}`}>
                 <Image 
-                  src={post?.mainImage ? urlFor(post.mainImage).dpr(2).url() : '/loading.gif'} 
+                  src={post?.mainImage ? urlFor(post.mainImage).auto('format').dpr(2).quality(75).url() : '/loading.gif'} 
                   unoptimized 
                   alt={post.category || "Post thumbnail"} 
                   width={200}
@@ -174,13 +177,13 @@ export default async function IndexPage() {
         {/* Banner Section */}
         <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
           <h2 className="text-palette-brown text-2xl sm:text-3xl font-bold mb-6 flex gap-2 justify-center items-center">
-            <MdVerified className="text-green-700 shrink-0"/>
+            <MdVerified className="text-green-700 shrink-0" aria-label="Verified badge"/>
             <span className="text-center">{offer?.heading}</span>
           </h2>
           
           <div className="relative w-full rounded-xl overflow-hidden shadow-md bg-zinc-200">
             <Image 
-              src={offer?.image ? urlFor(offer.image).dpr(2).url() : '/loading.gif'} 
+              src={offer?.image ? urlFor(offer.image).auto('format').dpr(2).quality(75).url() : '/loading.gif'} 
               alt={offer?.heading || "Special Offer"} 
               width={1920} 
               height={540} 
@@ -189,7 +192,7 @@ export default async function IndexPage() {
             />
             {/* Discount Badge */}
             <div className="absolute bottom-4 right-4 sm:bottom-5 sm:right-5 flex justify-center items-center">
-              <SlBadge className="text-6xl sm:text-8xl fill-black drop-shadow-sm z-1"/>
+              <SlBadge className="text-6xl sm:text-8xl fill-black drop-shadow-sm z-1" aria-label="Discount badge"/>
               <p className="text-2xl sm:text-4xl font-[Story-script] relative -top-2 -left-12 sm:-top-4 sm:-left-19 text-black font-black bg-green-500 rounded-full px-1.5 py-0.5 sm:p-2.5 shadow-inner z-0">
                 {offer?.percent}
               </p>           
@@ -228,7 +231,7 @@ export default async function IndexPage() {
               <div className="overflow-hidden rounded-xl border-2 border-palette-cream shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
                 <div className="relative w-full aspect-square">
                   <Image 
-                    src={item?.image ? urlFor(item.image).url() : '/loading.gif'} 
+                    src={item?.image ? urlFor(item.image).auto('format').dpr(2).quality(75).url() : '/loading.gif'} 
                     alt={item.name || "Customer review illustration"} 
                     width={200}
                     height={200}
@@ -250,7 +253,7 @@ export default async function IndexPage() {
       <section >
         <h2 className="text-md sm:text-2xl text-palette-brown max-w-7xl mx-auto my-4 font-bold">Locate us</h2>
         <div className="max-w-7xl  mx-auto my-4">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1943.2487051524326!2d80.2164038!3d13.0676314!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52616a744502b5%3A0x1e84faf419f38c6b!2sCustom%20Made%20Furniture%20-%20C%20M%20F!5e0!3m2!1sen!2sin!4v1780063124583!5m2!1sen!2sin" width="600" height="450"  loading="lazy" className="w-full rounded-lg border-palette-cream border-2"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1943.2487051524326!2d80.2164038!3d13.0676314!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52616a744502b5%3A0x1e84faf419f38c6b!2sCustom%20Made%20Furniture%20-%20C%20M%20F!5e0!3m2!1sen!2sin!4v1780063124583!5m2!1sen!2sin" rel="preconnect" width="600" height="450"  loading="lazy" className="w-full rounded-lg border-palette-cream border-2" title="Location of Custom Made Furniture Choolamedu"></iframe>
         </div>
       </section>
       {/* Dynamic Persistent Utilities Component Calls */}

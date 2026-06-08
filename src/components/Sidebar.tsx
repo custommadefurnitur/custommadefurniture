@@ -44,10 +44,10 @@ export default async function Sidebar() {
   }
 
   const iconurl = (source: string) => {
-    return source ? urlFor(source).height(30).width(30).dpr(2).url() : '/loading.gif';
+    return source ? urlFor(source).height(30).width(30).auto('format').dpr(2).url() : '/loading.gif';
   };
 
-  const homeicon = web?.businesslogo ? urlFor(web.businesslogo)?.width(100).height(100).dpr(2).url() : null;
+  const homeicon = web?.businesslogo ? urlFor(web.businesslogo)?.width(100).height(100).auto('format').auto('format').quality(75).dpr(2).url() : null;
 
   return (
     <nav className="h-dvh min-w-[250px] w-[40vw] snap-start fixed top-0 left-0 px-4 z-999 bg-palette-beige border-palette-cream border-2 shadow-lg shadow-palette-beige">
@@ -57,13 +57,13 @@ export default async function Sidebar() {
             src={homeicon} 
             height={100} 
             width={100} 
-            alt={`${web.businessname} logo`} 
+            alt={`${web.businessname} Logo`} 
             unoptimized 
             loading="eager" 
             className='rounded-full m-4 mb-0'
           />
         )}
-        <h1 className='text-nowrap max-[470]:hidden'>{web.businessname}</h1>
+        <span className='text-nowrap max-[470]:hidden font-bold text-lg'>{web.businessname}</span>
       </div>
       
       {/* Target dynamic navigation mapping links inside your mobile client rows */}
@@ -74,7 +74,7 @@ export default async function Sidebar() {
       <div className='flex justify-between mt-auto'> {/* Optional mt-auto pushes social block clean to bottom */}
         {social.map((link: SocialLink) => (
           <div key={link.name} className='flex flex-col items-center p-1 bg-palette-cream rounded '>
-            <Link prefetch={false} href={link.url}>
+            <Link prefetch={false} href={link.url} aria-label={`Visit our ${link.name} page`}>
               <Image 
                 src={iconurl(link.icon)} 
                 width={30}  

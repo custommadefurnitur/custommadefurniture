@@ -69,6 +69,7 @@ export default function BlogContent({ posts, siteUrl }: BlogContentProps) {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
+                aria-label={`Filter by category: ${cat}`}
                 className={`text-left px-3 py-2 rounded text-sm font-medium transition-colors ${
                   selectedCategory === cat 
                     ? 'bg-palette-cream text-palette-brown font-semibold' 
@@ -89,7 +90,7 @@ export default function BlogContent({ posts, siteUrl }: BlogContentProps) {
         ) : (
           filteredPosts.map((post) => {
             const postUrl = `${siteUrl}/blog/${post.slug}`;
-            const imageUrl = post.mainImage ? urlFor(post.mainImage).dpr(2).url() : '/loading.gif';
+            const imageUrl = post.mainImage ? urlFor(post.mainImage).auto('format').dpr(2).quality(75).url() : '/loading.gif';
 
             return (
               /* CARD CONTAINER: Matching the wireframe card dimensions */
@@ -110,10 +111,10 @@ export default function BlogContent({ posts, siteUrl }: BlogContentProps) {
                   
                   {/* Floating Client Interaction Button (Like your wireframe icons) */}
                   <div className="absolute bottom-4 right-4 z-10">
-                    <ShareButton title={post.title} text={post.description} url={postUrl} />
+                    <ShareButton title={post.title} text={post.description} url={postUrl} aria-label="Share this blog post" />
                   </div>
                    <div className="absolute top-4 right-4 z-10">
-                    <WishlistButton itemType="post" slug={post.slug} />
+                    <WishlistButton itemType="post" slug={post.slug} aria-label="Add to wishlist" />
                    </div>
 
                   {/* Absolute Category Badge */}

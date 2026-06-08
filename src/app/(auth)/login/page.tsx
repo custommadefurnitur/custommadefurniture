@@ -161,7 +161,7 @@ function LoginContent() {
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center mb-0.5">
               <label className="text-xs font-bold text-palette-brown uppercase tracking-wider">Password</label>
-              <Link href="/forgot-password" className="text-[11px] text-palette-brown font-semibold underline hover:text-black font-[Inter]">
+              <Link href="/forgot-password" className="text-[11px] text-palette-brown font-semibold underline hover:text-black font-[Inter]" aria-label="Navigate to forgot password page">
                 Forgot Password?
               </Link>
             </div>
@@ -189,7 +189,7 @@ function LoginContent() {
         <div className="text-center mt-6 pt-4 border-t border-palette-beige/30">
           <p className="text-xs text-gray-500 font-[Inter]">
             New to our studio workspace?{" "}
-            <Link href="/signup" className="font-bold text-palette-brown underline hover:text-black">
+            <Link href="/signup" className="font-bold text-palette-brown underline hover:text-black" aria-label="Navigate to registration page">
               Register here
             </Link>
           </p>

@@ -127,6 +127,7 @@ export default function ReviewForm({ productId }: ReviewFormProps) {
                   onMouseEnter={() => setHoverRating(starValue)}
                   onMouseLeave={() => setHoverRating(0)}
                   className="text-xl sm:text-2xl transition-transform duration-100 hover:scale-110 focus:outline-none"
+                  aria-label={`Rate ${starValue} out of 5 stars`}
                 >
                   <FaStar 
                     className={`transition-colors duration-150 ${
@@ -149,10 +150,11 @@ export default function ReviewForm({ productId }: ReviewFormProps) {
 
         {/* Text Area Evaluation Block */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">
+          <label htmlFor="review-comment" className="text-xs font-bold text-[#4C1A17] uppercase tracking-wider">
             Review Details
           </label>
           <textarea
+            id="review-comment"
             name="comment"
             rows={4}
             required
