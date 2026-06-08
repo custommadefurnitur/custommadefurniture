@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 
 export const SITE_NAME = "Custom Made Furniture";
 export const SITE_URL =
+<<<<<<< HEAD
   process.env.NEXT_PUBLIC_SITE_URL || "https://custommadefurniture.vercel.app/";
+=======
+  process.env.NEXT_PUBLIC_SITE_URL || "https://custommadefurniture.vercel.com";
+>>>>>>> 5b9a440870071c150f48cf0664556db1e409bffd
 export const DEFAULT_OG_IMAGE = "/og-image.svg";
 
 const defaultDescription =
