@@ -256,7 +256,7 @@ export default async function IndexPage() {
         <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1943.2487051524326!2d80.2164038!3d13.0676314!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52616a744502b5%3A0x1e84faf419f38c6b!2sCustom%20Made%20Furniture%20-%20C%20M%20F!5e0!3m2!1sen!2sin!4v1780063124583!5m2!1sen!2sin" rel="preconnect" width="600" height="450"  loading="lazy" className="w-full rounded-lg border-palette-cream border-2" title="Location of Custom Made Furniture Choolamedu"></iframe>
         </div>
       </section>
-      {/* Dynamic Persistent Utilities Component Calls */}
+      {/* Dynamic Persistent Utilities Component Calls  */}
       <Whatsapp/>
       <Call/>
     </main>
