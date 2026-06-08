@@ -35,7 +35,8 @@ export default function Menu({ children }: { children: React.ReactNode }) {
           src={isOpen ? "/closethemenu.jpg" : "/openthemenu.png"} 
           width={32} 
           height={32} 
-          alt="" 
+          quality={50}
+          alt="Menu" 
           aria-hidden="true"
           loading="eager" 
           className="rounded-full w-8 h-8"
