@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface WishlistButtonProps {
   itemType: "product" | "post";
@@ -52,7 +53,7 @@ export default function WishlistButton({ itemType, slug }: WishlistButtonProps) 
       isMounted = false;
     };
   }, [itemType, slug]);
-
+  const router = useRouter();
   const toggleWishlist = async () => {
     setLoading(true);
     setMessage(null);
@@ -69,6 +70,9 @@ export default function WishlistButton({ itemType, slug }: WishlistButtonProps) 
 
       const json = await response.json();
       if (!response.ok || !json.success) {
+        if (response.status === 401) {
+          shouldRedirect = true;
+        }
         setMessage(json?.message || "Unable to update wishlist.");
         return;
       }
