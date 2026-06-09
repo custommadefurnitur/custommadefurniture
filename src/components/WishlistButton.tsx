@@ -57,7 +57,7 @@ export default function WishlistButton({ itemType, slug }: WishlistButtonProps) 
   const toggleWishlist = async () => {
     setLoading(true);
     setMessage(null);
-
+    let shouldRedirect = false;
     try {
       const response = await fetch("/api/user/wishlist", {
         method: "POST",
