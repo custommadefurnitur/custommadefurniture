@@ -160,12 +160,10 @@ const cleanSiteUrl = SITE_URL.endsWith('/') ? SITE_URL.slice(0, -1) : SITE_URL;
             width={1920}
             height={1080}
             unoptimized
-            fetchPriority= "high"
             alt={web?.businessname || "Hero Banner"}
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-top "
             loading='eager'
             fetchPriority="high"
-           
           />
         )}
         
