@@ -5,6 +5,7 @@ export interface IFAQ extends Document {
   answer?: string;
   isPublished: boolean;
   helpfulVotes: number;
+  askedBy?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -14,6 +15,7 @@ const faqSchema = new Schema<IFAQ>({
   answer: { type: String, trim: true, default: '' },
   isPublished: { type: Boolean, default: false },
   helpfulVotes: { type: Number, default: 0 },
+  askedBy: { type: String, required: false }, // userId
 }, { timestamps: true });
 
 // Fallback check prevents compilation errors during Next.js hot-reloads
