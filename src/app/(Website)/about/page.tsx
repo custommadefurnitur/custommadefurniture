@@ -1,9 +1,8 @@
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { createSeoMetadata } from "@/lib/seo";
+import { SITE_NAME, SITE_URL, createSeoMetadata } from "@/lib/seo";
 import type { SanityImageSource } from "@sanity/image-url";
-
 
 // GROQ query combining both business details and worker products arrays
 const ABOUT_DATA_QUERY = `{
@@ -66,8 +65,59 @@ export default async function AboutPage() {
     );
   }
 
+  // 2. Generate a structured schema linking your business profile and team members
+  const corporateLogo = details.businesslogo 
+    ? urlFor(details.businesslogo).width(500).height(500).auto('format').url()
+    : `${SITE_URL}/favicon.ico`;
+
+  const aboutPageJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "AboutPage",
+        "@id": `${SITE_URL}/about/#webpage`,
+        "url": `${SITE_URL}/about`,
+        "name": `About Us | ${details.businessname || SITE_NAME}`,
+        "description": details.about || "Learn about our design studio, craftsmanship, team, and mission.",
+        "mainEntity": {
+          "@id": `${SITE_URL}/#organization`
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        "name": details.businessname || SITE_NAME,
+        "url": SITE_URL,
+        "logo": corporateLogo,
+        "description": details.about,
+        "knowsAbout": ["Custom Furniture", "Interior Design", "Luxury Handcrafted Furniture"],
+        "slogan": details.mission,
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "telephone": details.phone && details.phone.length > 0 ? `+91-${details.phone[0]}` : "+91-98404-28881",
+            "contactType": "customer service",
+            "areaServed": "IN",
+            "availableLanguage": ["en", "ta"]
+          }
+        ],
+        // Dynamically mapping team members from your Sanity dataset into the organization schema
+        "employee": (team || []).map((member) => ({
+          "@type": "Person",
+          "name": member.name,
+          "jobTitle": member.role,
+          "image": member.image ? urlFor(member.image).width(400).height(400).auto('format').url() : undefined
+        }))
+      }
+    ]
+  };
   return (
     <div className="bg-[#F3E5D8] text-[#4C1A17] min-h-screen py-12 px-4 md:px-8 mt-10">
+      <script
+        id="about-page-graph-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageJsonLd) }}
+      />
       <div className="max-w-4xl mx-auto flex flex-col gap-16">
         
         {/* Page Main Header */}

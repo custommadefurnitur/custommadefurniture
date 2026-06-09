@@ -6,7 +6,7 @@ import ProductActionControls from "@/components/ProductActionControls";
 import WishlistButton from "@/components/WishlistButton";
 import { Metadata } from "next";
 import ReviewForm from "@/components/ReviewForm";
-import { SITE_NAME, SITE_URL, createSeoMetadata, jsonLd, truncateMeta } from "@/lib/seo";
+import { SITE_NAME, SITE_URL, createSeoMetadata, truncateMeta } from "@/lib/seo";
 
 interface Props {
   params: Promise<{
@@ -14,7 +14,6 @@ interface Props {
   }>;
 }
 
-// Typing structure based on your MongoDB API response output
 interface MongoReview {
   _id: string;
   userId: string;
@@ -24,7 +23,6 @@ interface MongoReview {
   createdAt: string;
 }
 
-// 1. REUSABLE DATABASE QUERY FUNCTION FOR BOTH METADATA AND PAGE RENDERING
 async function getProductData(slug: string) {
   const query = `{
     "product": *[_type == "product" && slug.current == $slug][0] {
@@ -49,15 +47,13 @@ async function getProductData(slug: string) {
   
   const sanityData = await client.fetch(query, { slug });
 
-  // Fetch product reviews from your live Next.js API route matching this product
   let reviews: MongoReview[] = [];
   try {
-    // Dynamically fallback to localhost if you are running npm run dev locally
     const isDev = process.env.NODE_ENV === "development";
     const baseUrl = isDev ? "http://localhost:3000" : (process.env.NEXT_PUBLIC_SITE_URL || "https://custommadefurniture.com");
     
     const res = await fetch(`${baseUrl}/api/reviews?productId=${slug}`, {
-      next: { revalidate: 0 } // Ensures fresh reviews pull right out of MongoDB on load
+      next: { revalidate: 0 } 
     });
 
     if (res.ok) {
@@ -70,7 +66,6 @@ async function getProductData(slug: string) {
     console.error("Failed to load reviews from API endpoint:", error);
   }
 
-
   return {
     product: sanityData.product,
     business: sanityData.business,
@@ -78,7 +73,6 @@ async function getProductData(slug: string) {
   };
 }
 
-// 2. NEXT.JS DYNAMIC METADATA ENGINE FOR WHATSAPP PREVIEWS
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = await getProductData(slug);
@@ -96,10 +90,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     image: imageUrl,
     type: "article",
   });
-
 }
 
-// 3. MAIN PRODUCT DISPLAY PAGE COMPONENT
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
   const data = await getProductData(slug);
@@ -111,38 +103,74 @@ export default async function ProductPage({ params }: Props) {
   const { product, business, reviews } = data;
   const whatsappNumber = business?.whatsapp || "";
   const phoneNumber = business?.phone || "";
-  const productImage = product.gallery?.[0]?.url;
+  
+  // Clean fallback mapping for gallery array loops
+  const productImages = product.gallery && product.gallery.length > 0 
+    ? product.gallery.map((img: { url: string }) => img.url)
+    : [`${SITE_URL}/fallback-product.jpg`];
+
+  // Calculate precision average rating safely
+  const aggregateRatingValue = reviews.length
+    ? (reviews.reduce((total, review) => total + review.rating, 0) / reviews.length).toFixed(1)
+    : null;
+
+  // 2. Production Ready Product Schema Payload
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: product.title,
-    image: productImage ? [productImage] : undefined,
-    description: truncateMeta(product.shortdescription || product.description),
-    category: product.category,
-    brand: {
+    "name": product.title,
+    "image": productImages,
+    "description": truncateMeta(product.shortdescription || product.description),
+    "category": product.category,
+    "sku": `CMF-${product._id.substring(0, 6).toUpperCase()}`, // Added safe fallback SKU string to fix merchant listing warnings
+    "brand": {
       "@type": "Brand",
-      name: SITE_NAME,
+      "name": SITE_NAME,
     },
-    offers: {
+    "offers": {
       "@type": "Offer",
-      url: `${SITE_URL}/products/${product.slug}`,
-      price: product.price,
-      priceCurrency: "USD",
-      availability: "https://schema.org/InStock",
+      "url": `${SITE_URL}/products/${product.slug}`,
+      "price": product.price || "0",
+      "priceCurrency": "INR", // Changed from USD to INR to cleanly align with Chennai local map listings
+      "availability": "https://schema.org/InStock",
+      "itemCondition": "https://schema.org",
+      "priceValidUntil": "2027-12-31"
     },
-    aggregateRating: reviews.length
-      ? {
-          "@type": "AggregateRating",
-          ratingValue:
-            reviews.reduce((total, review) => total + review.rating, 0) / reviews.length,
-          reviewCount: reviews.length,
+    // Conditionally load MongoDB ratings loop array only if live reviews exist
+    ...(aggregateRatingValue ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": aggregateRatingValue,
+        "reviewCount": reviews.length,
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "review": reviews.slice(0, 5).map((rev) => ({
+        "@type": "Review",
+        "author": {
+          "@type": "Person",
+          "name": rev.reviewerName || "Verified Buyer"
+        },
+        "datePublished": rev.createdAt ? new Date(rev.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        "reviewBody": rev.comment || "",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": rev.rating.toString(),
+          "bestRating": "5",
+          "worstRating": "1"
         }
-      : undefined,
+      }))
+    } : {})
   };
 
   return (
     <main className="min-h-screen bg-[#F3E5D8] text-[#4C1A17] py-12 px-4 sm:px-6 lg:px-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(productJsonLd)} />
+      {/* 3. Injected Structured Script Data Elements */}
+      <script
+        id={`product-schema-${product._id}`}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <div className="max-w-6xl mx-auto">
         
         {/* BREADCRUMB */}

@@ -44,7 +44,7 @@ export default function ProductActionControls({ product, whatsappNumber, phoneNu
 
   const specFields = product.furnitureSpecs 
     ? Object.keys(product.furnitureSpecs)
-        .map((key) => `${key.replace(/([A-Z])/g, ' $1').toUpperCase()}: [____]`)
+        .map((key) => `${key.replace(/([A-Z])/g, ' $1').toUpperCase()}: [___]`)
         .join('\n')
     : '';
 

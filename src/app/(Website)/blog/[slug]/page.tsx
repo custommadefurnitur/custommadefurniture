@@ -55,6 +55,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export async function generateStaticParams() {
+  const SLUGS_QUERY = `*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`;
+  const posts = await client.fetch<{ slug: string }[]>(SLUGS_QUERY);
+
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+
 export default async function BlogPostPage({ params }: Props) {
   // 3. Awaiting params correctly matches the updated Props definition
   const { slug } = await params;
@@ -69,15 +78,26 @@ export default async function BlogPostPage({ params }: Props) {
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: post.title,
-    description: post.description,
-    image: post.mainImage ? [urlFor(post.mainImage).width(1200).height(630).auto('format').quality(75).url()] : undefined,
-    datePublished: post.uploadedDate,
-    mainEntityOfPage: postUrl,
-    publisher: {
-      "@type": "Organization",
-      name: SITE_NAME,
+    "headline": post.title,
+    "description": post.description,
+    "image": post.mainImage ? [urlFor(post.mainImage).width(1200).height(630).auto('format').quality(75).url()] : undefined,
+    "datePublished": post.uploadedDate,
+    "dateModified": post._updatedAt || post.uploadedDate,
+    "mainEntityOfPage": postUrl,
+    "author": {
+    "@type": "Organization",
+    "name": SITE_NAME,
+    "url": SITE_URL
     },
+    "publisher": {
+    "@type": "Organization",
+    "name": SITE_NAME,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${SITE_URL}/favicon.ico` 
+      }
+    },
+    "keywords": post.tags ? post.tags.join(", ") : undefined
   };
 
   return (

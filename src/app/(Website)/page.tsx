@@ -11,10 +11,11 @@ import { SlBadge } from "react-icons/sl";
 import { MdVerified } from "react-icons/md";
 import { ProductItem } from "@/app/(Website)/products/page";
 
-import  ProductGridClient  from "@/components/ProductGridClient";
+import ProductGridClient from "@/components/ProductGridClient";
 import CountdownTimer from "@/components/CountdownTimer";
 import FAQPage from "@/components/Faq";
-import { SITE_NAME, SITE_URL, createSeoMetadata, jsonLd } from "@/lib/seo";
+import { SITE_NAME, SITE_URL, createSeoMetadata,} from "@/lib/seo";
+import sitemap from "../sitemap";
 
 export const metadata = createSeoMetadata({
   title: "Custom Made Furniture",
@@ -44,30 +45,26 @@ const Hero_Query = `*[_type == "hero"]|order(_createdAt asc)[0]{
 const Review_Query = `*[_type == "review"]|order(_updatedAt desc){image,name}`
 
 export async function getAllProducts(): Promise<ProductItem[]> {
-  // Fetch all required data in a single clean query
   const query = `*[_type == "product"] {
-  _id,
-  title,
-  "slug": slug.current,
-  "gallery": gallery[]{
-    "assetId": asset->_id,
-    "url": asset->url,
-    crop,
-    hotspot
-  },
-  price,
-  category,
-  shortdescription,
-  description,
-  furnitureSpecs
-}
-`;
-
-  
+    _id,
+    title,
+    "slug": slug.current,
+    "gallery": gallery[]{
+      "assetId": asset->_id,
+      "url": asset->url,
+      crop,
+      hotspot
+    },
+    price,
+    category,
+    shortdescription,
+    description,
+    furnitureSpecs
+  }`;
   return await client.fetch(query);
 }
 
-export const revalidate = 3600; 
+export const revalidate = 0; 
 
 export default async function IndexPage() {
   const web = await client.fetch(Web_Query);
@@ -77,29 +74,84 @@ export default async function IndexPage() {
   const offer = await client.fetch(Offer_Query);
   const review = await client.fetch(Review_Query);
   const products = await getAllProducts();
-  const websiteJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: SITE_NAME,
-    url: SITE_URL,
-  };
-  const localBusinessJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FurnitureStore",
-    name: web?.businessname || SITE_NAME,
-    url: SITE_URL,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      bestRating: "5",
-    },
-  };
+
+  // 2. Generate a highly targeted unified @graph structure for the landing root
+ // Inside src/app/(Website)/page.tsx -> IndexPage() component
+
+// src/app/(Website)/page.tsx -> Inside IndexPage()
+
+// Ensure your SITE_URL in your lib/seo file does NOT end with a trailing slash (e.g., "https://custommadefurniture.vercel.app")
+const cleanSiteUrl = SITE_URL.endsWith('/') ? SITE_URL.slice(0, -1) : SITE_URL;
+
+
 
   return (
     <main className="w-full overflow-x-hidden mt-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(websiteJsonLd)} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(localBusinessJsonLd)} />
       
+      <script
+        id="home-graph-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ 
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "WebSite",
+                "@id": SITE_URL + "/#website",
+                "url": SITE_URL,
+                "name": web?.businessname || SITE_NAME,
+                "description": "Design custom sofas, wardrobes, dining tables, beds, and modular furniture built to match your room style.",
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": `${SITE_URL}/search?q={search_term_string}`
+                  },
+                  "query-input": "required name=search_term_string"
+                }
+              },
+              {
+                "@type": "ItemList",
+                "@id": `${SITE_URL}#featured-catalog`,
+                "name": "Featured Luxury Custom Furniture Collection",
+                "url": SITE_URL,
+                "numberOfItems": Math.min(products.length, 6),
+                "itemListElement": products.slice(0, 6).map((product, index) => {
+                  const primaryImage = product.gallery && product.gallery.length > 0 && product.gallery[0]?.url
+                    ? product.gallery[0].url 
+                    : "https://vercel.appfallback-product.jpg";
+
+                  return {
+                    "@type": "ListItem",
+                    "position": index + 1,
+                    "item": {
+                      "@type": "Product",
+                      "name": product.title,
+                      "description": product.shortdescription || product.description,
+                      "url": `${SITE_URL}/products/${product.slug}`,
+                      "image": [primaryImage],
+                      "sku": `CMF-FEAT-${product._id.substring(0, 6).toUpperCase()}`,
+                      "brand": {
+                        "@type": "Brand",
+                        "name": SITE_NAME
+                      },
+                      "offers": {
+                        "@type": "Offer",
+                        "url": `${SITE_URL}/products/${product.slug}`,
+                        "priceCurrency": "INR",
+                        "price": product.price || 0,
+                        // Placed explicitly with fixed trailing paths:
+                        "availability": "https://schema.org",
+                        "itemCondition": "https://schema.org"
+                      }
+                    }
+                  };
+                })
+              }
+            ]
+          }) 
+        }}
+      />
       {/* Hero Section */}
       <section className="relative w-screen h-[90vh] sm:h-screen  overflow-hidden bg-zinc-100">
         {heroImage && (
@@ -111,6 +163,7 @@ export default async function IndexPage() {
             alt={web?.businessname || "Hero Banner"}
             className="w-full h-full object-cover object-top"
             loading='eager'
+            fetchPriority="high"
            
           />
         )}
@@ -158,7 +211,7 @@ export default async function IndexPage() {
             >
               <Link className="w-full aspect-square block relative overflow-hidden rounded-md" href="/blog" aria-label={`Read our latest blog post in category ${post.category}`}>
                 <Image 
-                  src={post?.mainImage ? urlFor(post.mainImage).auto('format').dpr(2).quality(75).url() : '/loading.gif'} 
+                  src={post?.mainImage ? urlFor(post.mainImage).auto('format').quality(50).url() : '/loading.gif'} 
                   unoptimized 
                   alt={post.category || "Post thumbnail"} 
                   width={200}
@@ -183,7 +236,7 @@ export default async function IndexPage() {
           
           <div className="relative w-full rounded-xl overflow-hidden shadow-md bg-zinc-200">
             <Image 
-              src={offer?.image ? urlFor(offer.image).auto('format').dpr(2).quality(75).url() : '/loading.gif'} 
+              src={offer?.image ? urlFor(offer.image).auto('format').quality(75).url() : '/loading.gif'} 
               alt={offer?.heading || "Special Offer"} 
               width={1920} 
               height={540} 

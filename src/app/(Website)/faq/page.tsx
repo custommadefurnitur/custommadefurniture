@@ -12,7 +12,7 @@ interface FAQItem {
 export default function FAQPage() {
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showAll, setShowAll] = useState(false); // Toggle state for showing all items
+  const [showAll, setShowAll] = useState(false); 
   const [newQuestion, setNewQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [likedFaqIds, setLikedFaqIds] = useState<string[]>(() => {
@@ -84,7 +84,6 @@ export default function FAQPage() {
     }
   };
 
-  // 1. First filter FAQs based on the search query input
   const searchedFaqs = faqs.filter(faq => {
     const query = searchQuery.toLowerCase();
     return (
@@ -93,15 +92,37 @@ export default function FAQPage() {
     );
   });
 
-  // 2. Sort all matches by votes to know which ones are the "most liked"
   const sortedFaqs = [...searchedFaqs].sort((a, b) => b.helpfulVotes - a.helpfulVotes);
-
-  // 3. Determine final list: Show all if searching OR if toggle is turned ON. Otherwise, slice the top 5.
   const isSearching = searchQuery.trim() !== '';
   const finalDisplayFaqs = (showAll || isSearching) ? sortedFaqs : sortedFaqs.slice(0, 5);
 
+  // 2. Generate dynamic JSON-LD containing only published, answered QAs
+  const activeFaqsForSchema = faqs.filter(faq => faq.question && faq.answer);
+  
+  const faqJsonLd = activeFaqsForSchema.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": activeFaqsForSchema.map((faq) => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  } : null;
+
   return (
     <div className="min-h-screen bg-palette-cream text-palette-brown p-8 font-sans mt-13">
+      {/* 3. Inject Client-Side Dynamic Script Block */}
+      {faqJsonLd && (
+        <script
+          id="dynamic-public-faq-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
+
       <header className="max-w-5xl mx-auto text-center mb-10">
         <h1 className="text-4xl font-bold text-palette-maroon tracking-wide">FAQs</h1>
       </header>

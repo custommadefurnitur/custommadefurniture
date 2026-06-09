@@ -1,8 +1,7 @@
-// src/app/contact/page.tsx
 import {client} from '@/sanity/lib/client';
 import ContactForm from "@/components/ContactForm";
 import Link from 'next/link';
-import { createSeoMetadata } from '@/lib/seo';
+import { SITE_NAME, SITE_URL, createSeoMetadata } from '@/lib/seo';
 
 export const metadata = createSeoMetadata({
   title: "Contact Custom Made Furniture",
@@ -10,18 +9,22 @@ export const metadata = createSeoMetadata({
     "Contact Custom Made Furniture to discuss custom furniture dimensions, materials, finishes, showroom visits, and design consultations.",
   path: "/contact",
 });
+
 const Details_Query = `*[_type == "details"] | order(_createdAt desc)[0] {
   businessname,
   mission,
   phone,
   whatsapp,
-  address
+  address,
+  timing
 }`;
+
 const Social_Query = `*[_type == "sociallinks"] | order(order asc) {
   name,
   url,
   icon
 }`;
+
 interface SocialLink {
   name: string;
   url: string;
@@ -31,8 +34,69 @@ interface SocialLink {
 export default async function ContactPage() {
   const details = await client.fetch(Details_Query);
   const social: SocialLink[] = await client.fetch(Social_Query) || [];
+
+  // Fallback structural parsing parameters 
+  const businessPhones = details?.phone && details.phone.length > 0 
+    ? details.phone.map((p: number) => `+91-${p}`) 
+    : ["+91-98404-28881"];
+
+  // 2. Generate unified ContactPage schema graph payload
+  const contactPageJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        "@id": `${SITE_URL}/contact/#webpage`,
+        "url": `${SITE_URL}/contact`,
+        "name": `Contact Support & Showroom | ${details?.businessname || SITE_NAME}`,
+        "description": "Contact our Chennai design studio to discuss custom furniture dimensions, materials, finishes, and showroom visits."
+      },
+      {
+        "@type": "FurnitureStore",
+        "@id": `${SITE_URL}/#organization`, // Links directly back to your global organization graph 
+        "name": details?.businessname || SITE_NAME,
+        "url": SITE_URL,
+        "telephone": businessPhones[0],
+        "sameAs": social.map((link) => link.url), // Injects live Sanity social profile array links to build trust
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": details?.address || "94, Jai Nagar 3rd St, Kamarajar Nagar, Gill Nagar",
+          "addressLocality": "Choolaimedu, Chennai",
+          "addressRegion": "Tamil Nadu",
+          "postalCode": "600094",
+          "addressCountry": "IN"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "13.064158",
+          "longitude": "80.223561"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": businessPhones[0],
+          "contactType": "customer service",
+          "areaServed": "IN",
+          "availableLanguage": ["en", "ta"]
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            "opens": "09:00",
+            "closes": "20:00"
+          }
+        ]
+      }
+    ]
+  };
+
   return (
     <main className="w-full min-h-screen bg-[#F3E5D8]/30 pb-20 pt-10 font-[Poppins] mt-12">
+      <script
+        id="contact-page-graph-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactPageJsonLd) }}
+      />
       <div className="w-full max-w-[1140px] mx-auto px-4 sm:px-6">
         
         {/* Page Top Header Node */}
