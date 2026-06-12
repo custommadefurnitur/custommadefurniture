@@ -225,7 +225,7 @@ export default async function UserDashboardPage() {
                       {product.title}
                     </p>
                     {typeof product.price === "number" ? (
-                      <p className="mt-2 text-sm text-emerald-900">${product.price.toLocaleString()}</p>
+                      <p className="mt-2 text-sm text-emerald-900">₹{product.price.toLocaleString()}</p>
                     ) : null}
                   </Link>
                 ))}
