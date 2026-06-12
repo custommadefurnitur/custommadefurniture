@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import FAQ from '@/models/faq.model';
+import { auth } from '@/auth';
 
 // 1. GET: Fetch all published (answered) FAQ items
 export async function GET() {
@@ -16,6 +17,9 @@ export async function GET() {
 // 2. POST: Customer submits an unanswered question entry
 export async function POST(request: NextRequest) {
   try {
+    // Get user session
+    const session = await auth();
+    
     await connectDB();
     const { question } = await request.json();
 
@@ -23,7 +27,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Question text is required' }, { status: 400 });
     }
 
-    const newFAQ = new FAQ({ question, isPublished: false });
+    const newFAQ = new FAQ({ 
+      question, 
+      isPublished: false,
+      askedBy: session?.user?.id || null
+    });
     await newFAQ.save();
 
     return NextResponse.json({ message: 'Submitted! Awaiting owner response.', data: newFAQ }, { status: 201 });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface WishlistButtonProps {
   itemType: "product" | "post";
@@ -10,7 +11,7 @@ interface WishlistButtonProps {
 export default function WishlistButton({ itemType, slug }: WishlistButtonProps) {
   const [wishlisted, setWishlisted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null); 
 
   useEffect(() => {
     let isMounted = true;
@@ -52,11 +53,11 @@ export default function WishlistButton({ itemType, slug }: WishlistButtonProps) 
       isMounted = false;
     };
   }, [itemType, slug]);
-
+  const router = useRouter();
   const toggleWishlist = async () => {
     setLoading(true);
     setMessage(null);
-
+    let shouldRedirect = false;
     try {
       const response = await fetch("/api/user/wishlist", {
         method: "POST",
@@ -69,6 +70,9 @@ export default function WishlistButton({ itemType, slug }: WishlistButtonProps) 
 
       const json = await response.json();
       if (!response.ok || !json.success) {
+        if (response.status === 401) {
+          shouldRedirect = true;
+        }
         setMessage(json?.message || "Unable to update wishlist.");
         return;
       }
@@ -82,6 +86,9 @@ export default function WishlistButton({ itemType, slug }: WishlistButtonProps) 
       setMessage("Unable to update wishlist.");
     } finally {
       setLoading(false);
+      if (shouldRedirect) {
+        setTimeout(() => router.push("/login"), 1000);
+      }
     }
   };
 

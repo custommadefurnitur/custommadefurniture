@@ -244,7 +244,7 @@ export default async function ProductPage({ params }: Props) {
               </h1>
 
               <p className="text-2xl font-bold text-emerald-900 mb-6">
-                ${product.price.toLocaleString()}
+                ₹{product.price.toLocaleString()}
               </p>
 
               <div className="border-t border-[#D4BEA9] pt-6 mb-6">

@@ -64,7 +64,7 @@ export async function getAllProducts(): Promise<ProductItem[]> {
   return await client.fetch(query);
 }
 
-export const revalidate = 0; 
+export const revalidate = 3000; 
 
 export default async function IndexPage() {
   const web = await client.fetch(Web_Query);
@@ -205,7 +205,7 @@ const cleanSiteUrl = SITE_URL.endsWith('/') ? SITE_URL.slice(0, -1) : SITE_URL;
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {post?.map((post: { mainImage: string; category: string }, index: number) => (
             <div 
-              key={post.category || index} 
+              key={index} 
               className="rounded-lg w-full border-2 p-2 sm:p-3 border-palette-beige hover:border-palette-brown flex flex-col items-center gap-3 transition-colors duration-300 bg-white"
             >
               <Link className="w-full aspect-square block relative overflow-hidden rounded-md" href="/blog" aria-label={`Read our latest blog post in category ${post.category}`}>

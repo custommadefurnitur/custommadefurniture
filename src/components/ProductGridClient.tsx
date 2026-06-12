@@ -155,7 +155,7 @@ export default function ProductGridClient({ initialProducts }: Props) {
                   <h3 className="font-semibold text-lg line-clamp-1 text-palette-brown group-hover:text-palette-maroon transition-colors">
                     {product.title}
                   </h3>
-                  <span className="text-emerald-900 font-medium">${product.price}</span>
+                  <span className="text-emerald-900 font-medium">₹{product.price}</span>
                 </div>
 
                 <p className="text-sm text-slate-700 line-clamp-2 mt-auto">

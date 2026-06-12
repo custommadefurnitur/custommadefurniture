@@ -11,10 +11,16 @@ interface Props {
   phoneNumber: string;
 }
 
-type ModalStep = 'CLOSED' | 'CHOOSE_METHOD' | 'PHONE_CONFIRM' | 'PHONE_PREPARE';
+type ModalStep = 'CLOSED' | 'CHOOSE_METHOD' | 'WHATSAPP_CUSTOMIZE' | 'PHONE_CONFIRM' | 'PHONE_PREPARE';
 
 export default function ProductActionControls({ product, whatsappNumber, phoneNumber }: Props) {
   const [currentStep, setCurrentStep] = useState<ModalStep>('CLOSED');
+  const [customDetails, setCustomDetails] = useState({
+    dimensions: '',
+    upholstery: '',
+    timeline: '',
+    notes: '',
+  });
   
   // Track individual checkbox states for the preparation step
   const [checklist, setChecklist] = useState({
@@ -29,45 +35,31 @@ export default function ProductActionControls({ product, whatsappNumber, phoneNu
     if (step !== 'PHONE_PREPARE') {
       setChecklist({ dimensions: false, upholstery: false, timeline: false });
     }
+    if (step !== 'WHATSAPP_CUSTOMIZE') {
+      setCustomDetails({ dimensions: '', upholstery: '', timeline: '', notes: '' });
+    }
   };
 
   // Determine if all checklist items are ticked off
   const isReadyToCall = checklist.dimensions && checklist.upholstery && checklist.timeline;
 
   const handleWhatsAppRedirect = () => {
-  const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
-  
-  // FIX: Access the first element [0] of the gallery array instead of reading the array directly
-  const primaryImage = product.gallery && product.gallery.length > 0 
-    ? product.gallery[0].url 
-    : '';
+    const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
+    const cleanPhone = String(whatsappNumber || '').replace(/[+\s-]/g, '');
+    const customMessage = `I would like this product with custom details:\n\n` +
+      `*Dimensions:* ${customDetails.dimensions || '[please specify]'}\n` +
+      `*Upholstery / Material:* ${customDetails.upholstery || '[please specify]'}\n` +
+      `*Preferred Timeline:* ${customDetails.timeline || '[please specify]'}\n` +
+      (customDetails.notes ? `*Additional Notes:* ${customDetails.notes}\n` : '') +
+      `\nProduct: ${product.title}\n` +
+      `Product URL: ${pageUrl}`;
 
-  const specFields = product.furnitureSpecs 
-    ? Object.keys(product.furnitureSpecs)
-        .map((key) => `${key.replace(/([A-Z])/g, ' $1').toUpperCase()}: [___]`)
-        .join('\n')
-    : '';
+    const encodedText = encodeURIComponent(customMessage);
 
-  // RESTRUCTURE: Ensure the webpage URL is the absolute first thing in the string
-  const rawMessage = `${pageUrl}
+    window.open(`https://wa.me/${cleanPhone}?text=${encodedText}`, '_blank');
 
-Hello! I am highly interested in this item:
-
-📌 *Product Details:*
-* Title: ${product.title}
-${primaryImage ? `* Image Asset: ${primaryImage}` : ''}
-
-🛠 *Custom Layout Adjustments (Fill out your custom choices below):*
-${specFields}
-
-💡 _Don't worry about filling datas we will close the process only we closed the deal on the phone call😊_`;
-
-  const cleanPhone = String(whatsappNumber || '').replace(/[+\s-]/g, '');
-  const encodedText = encodeURIComponent(rawMessage);
-  
-  window.open(`https://wa.me/${cleanPhone}?text=${encodedText}`, '_blank');
-  changeStep('CLOSED');
-};
+    changeStep('CLOSED');
+  };
 
 
   const cleanPhoneCallTarget = String(phoneNumber || '').replace(/[\s-]/g, '');
@@ -111,18 +103,18 @@ ${specFields}
               <>
                 <div className="text-center">
                   <h3 className="text-xl font-serif font-bold text-[#4C1A17] mb-2">How would you like to proceed?</h3>
-                  <p className="text-sm opacity-80">Select a communication method to process details for *${product.title}*</p>
+                  <p className="text-sm opacity-80">Select a communication method to process details for *{product.title}*</p>
                 </div>
                 <div className="flex flex-col gap-3">
                   <button 
-                    onClick={handleWhatsAppRedirect}
+                    onClick={() => changeStep('WHATSAPP_CUSTOMIZE')}
                     className="w-full bg-[#700635] hover:bg-[#700635]/90 text-white font-bold py-3 px-4 rounded-xl transition-all"
-                    aria-label="Chat on WhatsApp"
+                    aria-label="Enter customisation details for WhatsApp"
                   >
                     💬 Chat on WhatsApp
                   </button>
                   <button 
-                    onClick={() => changeStep("PHONE_CONFIRM")}
+                    onClick={() => changeStep('PHONE_CONFIRM')}
                     className="w-full bg-[#4C1A17] hover:bg-[#4C1A17]/90 text-white font-bold py-3 px-4 rounded-xl transition-all"
                     aria-label="Make a Phone Call"
                   >
@@ -132,7 +124,79 @@ ${specFields}
               </>
             )}
 
-            {/* STEP 2: PHONE ENGAGEMENT CONFIRMATION */}
+            {/* STEP 2: WHATSAPP CUSTOMIZATION DETAILS */}
+            {currentStep === 'WHATSAPP_CUSTOMIZE' && (
+              <>
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <h3 className="text-xl font-serif font-bold text-[#4C1A17]">Customize Your Request</h3>
+                    <p className="text-sm opacity-80">Fill in the details below so we can prefill your WhatsApp message.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <label className="block">
+                      <span className="text-sm font-semibold text-[#4C1A17]">Dimensions</span>
+                      <input
+                        value={customDetails.dimensions}
+                        onChange={(e) => setCustomDetails(prev => ({ ...prev, dimensions: e.target.value }))}
+                        placeholder="e.g. 7ft x 3ft x 3ft"
+                        className="mt-2 w-full rounded-xl border border-[#D4BEA9] bg-white/90 px-4 py-3 text-sm text-[#4C1A17] outline-none focus:ring-2 focus:ring-[#700635]/40"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="text-sm font-semibold text-[#4C1A17]">Upholstery / Material</span>
+                      <input
+                        value={customDetails.upholstery}
+                        onChange={(e) => setCustomDetails(prev => ({ ...prev, upholstery: e.target.value }))}
+                        placeholder="e.g. velvet, leather, oak finish"
+                        className="mt-2 w-full rounded-xl border border-[#D4BEA9] bg-white/90 px-4 py-3 text-sm text-[#4C1A17] outline-none focus:ring-2 focus:ring-[#700635]/40"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="text-sm font-semibold text-[#4C1A17]">Preferred Timeline</span>
+                      <input
+                        value={customDetails.timeline}
+                        onChange={(e) => setCustomDetails(prev => ({ ...prev, timeline: e.target.value }))}
+                        placeholder="e.g. 4-6 weeks delivery"
+                        className="mt-2 w-full rounded-xl border border-[#D4BEA9] bg-white/90 px-4 py-3 text-sm text-[#4C1A17] outline-none focus:ring-2 focus:ring-[#700635]/40"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="text-sm font-semibold text-[#4C1A17]">Additional Notes</span>
+                      <textarea
+                        value={customDetails.notes}
+                        onChange={(e) => setCustomDetails(prev => ({ ...prev, notes: e.target.value }))}
+                        placeholder="Any extra preferences or questions"
+                        rows={3}
+                        className="mt-2 w-full rounded-xl border border-[#D4BEA9] bg-white/90 px-4 py-3 text-sm text-[#4C1A17] outline-none focus:ring-2 focus:ring-[#700635]/40"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    <button
+                      onClick={handleWhatsAppRedirect}
+                      className="w-full bg-[#700635] hover:bg-[#700635]/90 text-white font-bold py-3 px-4 rounded-xl transition-all"
+                      aria-label="Open WhatsApp with prefilled custom details"
+                    >
+                      Send via WhatsApp
+                    </button>
+                    <button
+                      onClick={() => changeStep('CHOOSE_METHOD')}
+                      className="w-full bg-transparent border border-[#4C1A17] font-semibold py-3 px-4 rounded-xl text-[#4C1A17] transition-all"
+                      aria-label="Go back to choose contact method"
+                    >
+                      Back
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* STEP 3: PHONE ENGAGEMENT CONFIRMATION */}
             {currentStep === 'PHONE_CONFIRM' && (
               <>
                 <div className="text-center space-y-2">
@@ -158,7 +222,7 @@ ${specFields}
               </>
             )}
 
-            {/* STEP 3: PRE-CALL PREPARATION CHECKLIST ITEMS WITH INTERACTIVE CHECKBOXES */}
+            {/* STEP 4: PRE-CALL PREPARATION CHECKLIST ITEMS WITH INTERACTIVE CHECKBOXES */}
             {currentStep === 'PHONE_PREPARE' && (
               <>
                 <div className="space-y-2">
@@ -240,8 +304,8 @@ ${specFields}
     }}
     className={`text-center font-bold py-3.5 px-4 rounded-xl block shadow transition-all duration-300 ${
       isReadyToCall 
-        ? 'bg-[#4C1A17] hover:bg-[#700635] text-white cursor-pointer active:scale-[0.99] aria-label="Call owner now"' 
-        : 'bg-neutral-300 text-neutral-500 cursor-not-allowed border border-neutral-400 opacity-60 aria-label="Check all items to unlock call"'
+        ? 'bg-[#4C1A17] hover:bg-[#700635] text-white cursor-pointer active:scale-[0.99]' 
+        : 'bg-neutral-300 text-neutral-500 cursor-not-allowed border border-neutral-400 opacity-60'
     }`}
     aria-label={isReadyToCall ? "Call owner now" : "Check all items to unlock call"}
   >

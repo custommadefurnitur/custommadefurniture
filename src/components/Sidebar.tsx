@@ -42,6 +42,9 @@ export default async function Sidebar() {
       combinedLinks.push({ name: 'Admin Hub', path: '/admin' });
     }
   }
+  if(!user){
+    combinedLinks.push({name:'Login',path:'/dashboard'})
+  }
 
   const iconurl = (source: string) => {
     return source ? urlFor(source).height(30).width(30).auto('format').dpr(2).url() : '/loading.gif';
