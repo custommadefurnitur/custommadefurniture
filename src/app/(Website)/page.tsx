@@ -75,16 +75,6 @@ export default async function IndexPage() {
   const review = await client.fetch(Review_Query);
   const products = await getAllProducts();
 
-  // 2. Generate a highly targeted unified @graph structure for the landing root
- // Inside src/app/(Website)/page.tsx -> IndexPage() component
-
-// src/app/(Website)/page.tsx -> Inside IndexPage()
-
-// Ensure your SITE_URL in your lib/seo file does NOT end with a trailing slash (e.g., "https://custommadefurniture.vercel.app")
-const cleanSiteUrl = SITE_URL.endsWith('/') ? SITE_URL.slice(0, -1) : SITE_URL;
-
-
-
   return (
     <main className="w-full overflow-x-hidden mt-10">
       

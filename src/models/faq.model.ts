@@ -15,7 +15,11 @@ const faqSchema = new Schema<IFAQ>({
   answer: { type: String, trim: true, default: '' },
   isPublished: { type: Boolean, default: false },
   helpfulVotes: { type: Number, default: 0 },
+<<<<<<< HEAD
   askedBy: { type: String, required: false }
+=======
+  askedBy: { type: String, required: false }, // userId
+>>>>>>> 588fe0bfad56bf30c6b58fa3a8cef4f6c36f1403
 }, { timestamps: true });
 
 // Fallback check prevents compilation errors during Next.js hot-reloads
